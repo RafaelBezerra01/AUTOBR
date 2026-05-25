@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 # AutoBR — CRUD de Veículos com Flask + SQLite
 
 Site estilo WebMotors para anunciar e gerenciar veículos.
 
-## 🚀 Como rodar
+## Como rodar
 
 ### 1. Instale as dependências
 ```bash
@@ -22,7 +21,7 @@ http://localhost:5000
 
 ---
 
-## 📁 Estrutura
+## Estrutura
 
 ```
 webmotors/
@@ -35,7 +34,7 @@ webmotors/
     └── form.html          # Formulário criar/editar
 ```
 
-## ⚡ Funcionalidades CRUD
+## Funcionalidades CRUD
 
 | Ação     | Rota                     | Método |
 |----------|--------------------------|--------|
@@ -45,16 +44,17 @@ webmotors/
 | Editar   | `/car/<id>/edit`         | GET/POST |
 | Deletar  | `/car/<id>/delete`       | POST   |
 
-## 🔍 Filtros disponíveis
+## Filtros disponíveis
 - Busca por texto (marca, modelo, cidade)
 - Filtro por marca
 - Filtro por combustível
 - Filtro por câmbio (automático/manual)
 - Faixa de preço (mín/máx)
 
-## 🗄️ Banco de dados
+## Banco de dados
 - SQLite local (`cars.db`) — criado automaticamente
 - 8 veículos de exemplo inseridos no primeiro run
+
 =======
 # AUTOBR
 >>>>>>> ccf36021c8af2a74c1f8997af5716ecc851351f8
