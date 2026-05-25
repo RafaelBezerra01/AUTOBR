@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AutoBR — Compre e Venda Veículos{% endblock %}</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+
+    {% block extra_style %}{% endblock %}
+</head>
+<body>
+<nav>
+    <a href="/" class="logo">
+        Auto<span>BR</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/">Buscar</a>
+        <a href="/car/new" class="btn-primary">+ Anunciar</a>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash {{ category }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endwith %}
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    <strong style="font-family:'Syne',sans-serif; color:var(--text)">
+        Auto<span style="color:var(--accent)">BR</span>
+    </strong>
+
+    <br><br>
+
+    Compre e venda veículos com segurança.
+
+    <br>
+
+    © 2026 AutoBR — Todos os direitos reservados.
+</footer>
+</body>
+</html>

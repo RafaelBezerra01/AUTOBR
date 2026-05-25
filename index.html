@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% block title %}AutoBR — Encontre seu próximo veículo{% endblock %}
+
+{% block extra_style %}
+<style>
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #0e1220 0%, #1a0d08 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3.5rem 2rem 0;
+    position: relative; overflow: hidden;
+}
+.hero::before {
+    content: 'AUTOBR';
+    position: absolute; right: -2rem; top: 50%; transform: translateY(-60%);
+    font-family: 'Syne', sans-serif; font-size: 10rem; font-weight: 800;
+    color: rgba(232,66,26,0.06); letter-spacing: -0.05em; pointer-events: none; white-space: nowrap;
+}
+.hero-inner { max-width: 1280px; margin: 0 auto; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.04em; }
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--muted); margin-top: .5rem; font-size: 1.05rem; }
+
+/* SEARCH BAR */
+.search-bar {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.2rem 1.5rem;
+    display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+    margin-top: 2rem; margin-bottom: -1px;
+}
+.search-input {
+    flex: 1; min-width: 200px; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: .65rem 1rem; border-radius: 8px; font-size: .9rem;
+    font-family: 'DM Sans', sans-serif; outline: none; transition: border .2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: .65rem 1rem; border-radius: 8px; font-size: .9rem;
+    font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer;
+}
+.search-select:focus { border-color: var(--accent); }
+
+/* FILTER TABS */
+.filter-bar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+}
+.results-count { color: var(--muted); font-size: .85rem; flex: 1; }
+.results-count strong { color: var(--text); }
+
+/* GRID */
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem; padding: 2rem 0;
+}
+.car-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; transition: transform .25s, border-color .25s, box-shadow .25s;
+    text-decoration: none; color: inherit; display: flex; flex-direction: column;
+}
+.car-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(232,66,26,.15); }
+.car-img {
+    height: 190px;
+    background: linear-gradient(135deg, var(--surface2) 0%, #1f1520 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem; position: relative; overflow: hidden;
+}
+.car-img::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+    background: linear-gradient(transparent, var(--card));
+}
+.car-badge {
+    position: absolute; top: .75rem; left: .75rem;
+    background: var(--accent); color: white; font-size: .7rem; font-weight: 700;
+    padding: .2rem .6rem; border-radius: 4px; text-transform: uppercase; letter-spacing: .05em;
+}
+.car-info { padding: 1rem 1.2rem 1.2rem; flex: 1; display: flex; flex-direction: column; gap: .4rem; }
+.car-brand { font-size: .75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+.car-name { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+.car-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .2rem; }
+.tag { background: var(--surface2); color: var(--muted); font-size: .72rem; padding: .2rem .55rem; border-radius: 4px; border: 1px solid var(--border); }
+.car-price { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--text); margin-top: auto; padding-top: .8rem; }
+.car-location { color: var(--muted); font-size: .8rem; display: flex; align-items: center; gap: .3rem; }
+
+/* EMPTY */
+.empty { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+.empty h2 { font-family: 'Syne', sans-serif; font-size: 1.5rem; color: var(--text); margin-bottom: .5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-inner">
+        <h1>Encontre o carro<br>dos seus <span>sonhos.</span></h1>
+        <p>{{ cars|length }} veículos disponíveis agora mesmo</p>
+        <form method="GET" action="/">
+            <div class="search-bar">
+                <input class="search-input" name="search" placeholder="🔍  Marca, modelo ou cidade..." value="{{ search }}">
+                <select class="search-select" name="brand">
+                    <option value="">Todas as marcas</option>
+                    {% for b in brands %}
+                    <option value="{{ b }}" {% if brand == b %}selected{% endif %}>{{ b }}</option>
+                    {% endfor %}
+                </select>
+                <select class="search-select" name="fuel">
+                    <option value="">Combustível</option>
+                    {% for f in ['Flex','Gasolina','Diesel','Elétrico','Híbrido','Turbo Flex'] %}
+                    <option value="{{ f }}" {% if fuel == f %}selected{% endif %}>{{ f }}</option>
+                    {% endfor %}
+                </select>
+                <select class="search-select" name="transmission">
+                    <option value="">Câmbio</option>
+                    <option value="Automático" {% if transmission == 'Automático' %}selected{% endif %}>Automático</option>
+                    <option value="Manual" {% if transmission == 'Manual' %}selected{% endif %}>Manual</option>
+                </select>
+                <input class="search-input" style="max-width:130px" name="min_price" placeholder="R$ Mín" value="{{ min_price }}" type="number">
+                <input class="search-input" style="max-width:130px" name="max_price" placeholder="R$ Máx" value="{{ max_price }}" type="number">
+                <button type="submit" class="btn-primary" style="white-space:nowrap">Buscar</button>
+                {% if search or brand or fuel or transmission or min_price or max_price %}
+                <a href="/" class="btn-secondary" style="white-space:nowrap">Limpar</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</section>
+
+<div class="filter-bar">
+    <span class="results-count"><strong>{{ cars|length }}</strong> veículos encontrados</span>
+    <a href="/car/new" class="btn-primary" style="margin-left:auto">+ Anunciar veículo</a>
+</div>
+
+<div class="container">
+    {% if cars %}
+    <div class="cars-grid">
+        {% for car in cars %}
+        {% set icons = {'Toyota':'🚗','Honda':'🚙','Volkswagen':'🚘','Chevrolet':'🏎','Jeep':'🚙','Hyundai':'🚗','Fiat':'🚗','Renault':'🚗'} %}
+        <a href="/car/{{ car.id }}" class="car-card">
+            <div class="car-img">
+                {{ icons.get(car.brand, '🚗') }}
+                {% if car.year >= 2023 %}<span class="car-badge">Novo</span>{% endif %}
+            </div>
+            <div class="car-info">
+                <div class="car-brand">{{ car.brand }}</div>
+                <div class="car-name">{{ car.model }} {{ car.year }}</div>
+                <div class="car-tags">
+                    <span class="tag">{{ car.fuel }}</span>
+                    <span class="tag">{{ car.transmission }}</span>
+                    <span class="tag">{{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</span>
+                    <span class="tag">{{ car.color }}</span>
+                </div>
+                <div class="car-price">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
+                <div class="car-location">📍 {{ car.city }}, {{ car.state }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+        <div style="font-size:4rem;margin-bottom:1rem">🔍</div>
+        <h2>Nenhum veículo encontrado</h2>
+        <p>Tente outros filtros ou <a href="/" style="color:var(--accent)">limpe a busca</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

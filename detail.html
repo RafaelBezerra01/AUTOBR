@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}{{ car.brand }} {{ car.model }} {{ car.year }} — AutoBR{% endblock %}
+
+{% block extra_style %}
+<style>
+.detail-hero {
+    background: linear-gradient(160deg, #0e1220 0%, #1a0d08 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+}
+.breadcrumb { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--border); margin: 0 .4rem; }
+
+.detail-layout { display: grid; grid-template-columns: 1fr 360px; gap: 2rem; max-width: 1280px; margin: 2rem auto; padding: 0 2rem; }
+@media (max-width: 900px) { .detail-layout { grid-template-columns: 1fr; } }
+
+.car-photo {
+    background: linear-gradient(135deg, var(--surface2) 0%, #1f1520 100%);
+    border-radius: 14px; border: 1px solid var(--border);
+    height: 380px; display: flex; align-items: center; justify-content: center;
+    font-size: 9rem; position: relative; overflow: hidden;
+}
+.car-photo::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
+    background: linear-gradient(transparent, rgba(12,14,20,.6));
+}
+
+.section-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
+.detail-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+.specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.spec { background: var(--surface2); border-radius: 8px; padding: .8rem 1rem; }
+.spec-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .2rem; }
+.spec-value { font-weight: 600; font-size: .95rem; }
+
+.price-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; position: sticky; top: 80px; }
+.price-tag { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; margin-bottom: .3rem; }
+.price-sub { color: var(--muted); font-size: .85rem; margin-bottom: 1.5rem; }
+.seller-info { background: var(--card); border-radius: 10px; padding: 1rem; margin-top: 1.2rem; }
+.seller-name { font-weight: 600; font-size: .95rem; margin-bottom: .3rem; }
+.seller-phone { color: var(--accent); font-size: 1.05rem; font-weight: 600; }
+.btn-contact { background: #1a3a1a; color: #4ade80; border: 1px solid #2a6a2a; width: 100%; padding: .75rem; border-radius: 8px; font-weight: 700; font-size: .95rem; cursor: pointer; margin-top: .8rem; font-family: 'DM Sans', sans-serif; transition: background .2s; }
+.btn-contact:hover { background: #2a5a2a; }
+
+.actions-row { display: flex; gap: .8rem; margin-top: 1.5rem; }
+.desc-text { color: var(--muted); line-height: 1.7; font-size: .95rem; margin-top: .5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-hero">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="/">Início</a><span>›</span>
+            <a href="/?brand={{ car.brand }}">{{ car.brand }}</a><span>›</span>
+            {{ car.model }}
+        </div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+            <div>
+                <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">{{ car.brand }}</div>
+                <h1 style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-.04em;line-height:1.1">{{ car.model }} {{ car.year }}</h1>
+                <div style="color:var(--muted);margin-top:.4rem;font-size:.9rem">📍 {{ car.city }}, {{ car.state }}</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="detail-layout">
+    <div>
+        {% set icons = {'Toyota':'🚗','Honda':'🚙','Volkswagen':'🚘','Chevrolet':'🏎','Jeep':'🚙','Hyundai':'🚗','Fiat':'🚗','Renault':'🚗'} %}
+        <div class="car-photo">{{ icons.get(car.brand, '🚗') }}</div>
+
+        <div class="detail-card" style="margin-top:1.5rem">
+            <div class="section-title">Especificações</div>
+            <div class="specs-grid">
+                <div class="spec"><div class="spec-label">Ano</div><div class="spec-value">{{ car.year }}</div></div>
+                <div class="spec"><div class="spec-label">Quilometragem</div><div class="spec-value">{{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</div></div>
+                <div class="spec"><div class="spec-label">Combustível</div><div class="spec-value">{{ car.fuel }}</div></div>
+                <div class="spec"><div class="spec-label">Câmbio</div><div class="spec-value">{{ car.transmission }}</div></div>
+                <div class="spec"><div class="spec-label">Cor</div><div class="spec-value">{{ car.color }}</div></div>
+                <div class="spec"><div class="spec-label">Localização</div><div class="spec-value">{{ car.city }}/{{ car.state }}</div></div>
+            </div>
+        </div>
+
+        {% if car.description %}
+        <div class="detail-card" style="margin-top:1.5rem">
+            <div class="section-title">Descrição</div>
+            <p class="desc-text">{{ car.description }}</p>
+        </div>
+        {% endif %}
+
+        <div class="actions-row">
+            <a href="/car/{{ car.id }}/edit" class="btn-secondary">✏️ Editar anúncio</a>
+            <form method="POST" action="/car/{{ car.id }}/delete" onsubmit="return confirm('Tem certeza que deseja remover este veículo?')">
+                <button type="submit" class="btn-secondary btn-danger">🗑 Remover</button>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <div class="price-card">
+            <div class="price-tag">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
+            <div class="price-sub">{{ car.brand }} {{ car.model }} · {{ car.year }} · {{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</div>
+            <a href="tel:{{ car.seller_phone }}" class="btn-primary" style="display:block;text-align:center;padding:.75rem">📞 Ver telefone</a>
+            <div class="seller-info">
+                <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Vendedor</div>
+                <div class="seller-name">{{ car.seller_name }}</div>
+                <div class="seller-phone">{{ car.seller_phone }}</div>
+                <button class="btn-contact">💬 Enviar mensagem</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

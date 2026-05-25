@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}{% if action == 'new' %}Anunciar Veículo{% else %}Editar Anúncio{% endif %} — AutoBR{% endblock %}
+
+{% block extra_style %}
+<style>
+.form-hero {
+    background: linear-gradient(135deg, #0e1220 0%, #1a0808 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+}
+.form-title { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: -.04em; }
+.form-sub { color: var(--muted); margin-top: .4rem; }
+
+.form-layout { max-width: 860px; margin: 2rem auto; padding: 0 2rem; }
+.form-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.8rem; margin-bottom: 1.5rem; }
+.form-section-title { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1.2rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 600px) { .form-grid, .form-grid.three { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: .4rem; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+input, select, textarea {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: .7rem 1rem; border-radius: 8px; font-size: .9rem;
+    font-family: 'DM Sans', sans-serif; outline: none; transition: border .2s;
+    width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,66,26,.1); }
+textarea { resize: vertical; min-height: 100px; }
+select option { background: var(--surface2); }
+
+.form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: .5rem; }
+.btn-submit { padding: .8rem 2.5rem; font-size: 1rem; border-radius: 10px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-hero">
+    <div class="container">
+        {% if action == 'edit' %}
+        <div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">
+            <a href="/" style="color:var(--muted);text-decoration:none">Início</a> › 
+            <a href="/car/{{ car.id }}" style="color:var(--muted);text-decoration:none">{{ car.brand }} {{ car.model }}</a> › Editar
+        </div>
+        {% endif %}
+        <div class="form-title">{% if action == 'new' %}Anunciar veículo 🚗{% else %}Editar anúncio ✏️{% endif %}</div>
+        <div class="form-sub">Preencha os dados do veículo para {% if action == 'new' %}publicar seu anúncio{% else %}atualizar o anúncio{% endif %}</div>
+    </div>
+</div>
+
+<div class="form-layout">
+    <form method="POST">
+        <div class="form-section">
+            <div class="form-section-title">📋 Dados do veículo</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Marca *</label>
+                    <input name="brand" required value="{{ car.brand if car else '' }}" placeholder="ex: Toyota, Honda...">
+                </div>
+                <div class="form-group">
+                    <label>Modelo *</label>
+                    <input name="model" required value="{{ car.model if car else '' }}" placeholder="ex: Corolla, Civic...">
+                </div>
+                <div class="form-group">
+                    <label>Ano *</label>
+                    <input name="year" type="number" required min="1990" max="2025" value="{{ car.year if car else 2023 }}">
+                </div>
+                <div class="form-group">
+                    <label>Cor *</label>
+                    <input name="color" required value="{{ car.color if car else '' }}" placeholder="ex: Branco Pérola">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">⚙️ Informações técnicas</div>
+            <div class="form-grid three">
+                <div class="form-group">
+                    <label>Combustível *</label>
+                    <select name="fuel" required>
+                        {% for f in ['Flex','Gasolina','Diesel','Elétrico','Híbrido','Turbo Flex'] %}
+                        <option value="{{ f }}" {% if car and car.fuel == f %}selected{% endif %}>{{ f }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Câmbio *</label>
+                    <select name="transmission" required>
+                        <option value="Automático" {% if car and car.transmission == 'Automático' %}selected{% endif %}>Automático</option>
+                        <option value="Manual" {% if car and car.transmission == 'Manual' %}selected{% endif %}>Manual</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quilometragem *</label>
+                    <input name="mileage" type="number" required min="0" value="{{ car.mileage if car else '' }}" placeholder="km rodados">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">💰 Valor e localização</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Preço (R$) *</label>
+                    <input name="price" type="number" required min="0" step="100" value="{{ car.price if car else '' }}" placeholder="Ex: 89900">
+                </div>
+                <div class="form-group">
+                    <label>Cidade *</label>
+                    <input name="city" required value="{{ car.city if car else '' }}" placeholder="São Paulo">
+                </div>
+                <div class="form-group">
+                    <label>Estado *</label>
+                    <select name="state" required>
+                        {% for uf in ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'] %}
+                        <option value="{{ uf }}" {% if car and car.state == uf %}selected{% endif %}>{{ uf }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Descrição</label>
+                    <textarea name="description" placeholder="Descreva o estado do veículo, opcionais, histórico de manutenção...">{{ car.description if car else '' }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">👤 Dados do vendedor</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input name="seller_name" required value="{{ car.seller_name if car else '' }}" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp *</label>
+                    <input name="seller_phone" required value="{{ car.seller_phone if car else '' }}" placeholder="(11) 99999-9999">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ '/car/' + car.id|string if car else '/' }}" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary btn-submit">
+                {% if action == 'new' %}🚀 Publicar anúncio{% else %}💾 Salvar alterações{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
