@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AutoBR — CRUD de Veículos com Flask + SQLite
 
 Site estilo WebMotors para anunciar e gerenciar veículos.
@@ -54,3 +55,6 @@ webmotors/
 ## 🗄️ Banco de dados
 - SQLite local (`cars.db`) — criado automaticamente
 - 8 veículos de exemplo inseridos no primeiro run
+=======
+# AUTOBR
+>>>>>>> ccf36021c8af2a74c1f8997af5716ecc851351f8
