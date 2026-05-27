@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from werkzeug.utils import secure_filename
 import sqlite3
 import os
 
@@ -6,6 +7,16 @@ app = Flask(__name__)
 app.secret_key = 'webmotors_secret'
 basedir = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(basedir, 'cars.db')
+
+UPLOAD_FOLDER = os.path.join(basedir, 'static/uploads')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Função para validar extensões de arquivos
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Função para obter conexão com o banco de dados
 def get_db():
@@ -32,6 +43,7 @@ def init_db():
             state TEXT NOT NULL,
             seller_name TEXT NOT NULL,
             seller_phone TEXT NOT NULL,
+            images TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -111,50 +123,85 @@ def car_new():
     if request.method == 'POST':
         data = request.form
         
-        # Validação de dados numéricos
-        try:
-            year = int(data['year'])
-            price = float(data['price'])
-            mileage = int(data['mileage'])
-        except ValueError:
-            flash('Erro: Os campos Ano, Preço e Quilometragem devem conter apenas números.', 'error')
-            # Retorna o formulário com os dados preenchidos para o usuário corrigir
-            return render_template('form.html', car=data, action='new')
+        # --- NOVO: Lógica para capturar arquivos ---
+        files = request.files.getlist('images')
+        saved_filenames = []
 
-        # Se passou na validação, insere no banco
+        for file in files[:6]: # Limite de 6 fotos
+            if file and allowed_file(file.filename):
+                # Gera um nome único para a imagem
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                unique_name = f"{os.urandom(8).hex()}.{ext}"
+                
+                # Salva fisicamente na pasta static/uploads
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_name))
+                saved_filenames.append(unique_name)
+        
+        # Transforma a lista de nomes em uma string (ex: "foto1.jpg,foto2.jpg")
+        images_str = ",".join(saved_filenames)
+        # ------------------------------------------
+
         conn = get_db()
-        conn.execute('''INSERT INTO cars (brand, model, year, price, mileage, fuel, transmission, color, description, city, state, seller_name, seller_phone)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-                     (data['brand'], data['model'], year, price,
-                      mileage, data['fuel'], data['transmission'], data['color'],
-                      data['description'], data['city'], data['state'], data['seller_name'], data['seller_phone']))
+        # Adicione 'images' na lista de colunas e o images_str nos valores
+        conn.execute('''
+            INSERT INTO cars (
+                brand, model, year, price, mileage, fuel, transmission, 
+                color, description, city, state, seller_name, seller_phone, images
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (data['brand'], data['model'], int(data['year']), float(data['price']),
+             int(data['mileage']), data['fuel'], data['transmission'], data['color'],
+             data['description'], data['city'], data['state'], data['seller_name'], 
+             data['seller_phone'], images_str)) # <-- Agora salvando a string das fotos
+        
         conn.commit()
         conn.close()
-        flash('Veículo anunciado com sucesso!', 'success')
+        flash('Anúncio publicado com sucesso!', 'success')
         return redirect(url_for('index'))
-        
-    return render_template('form.html', car=None, action='new')
+    
+    return render_template('form.html', action='new')
 
 # Edição de anúncios com validação de dados numéricos e mensagens de erro para o usuário
 @app.route('/car/<int:car_id>/edit', methods=['GET', 'POST'])
 def car_edit(car_id):
     conn = get_db()
     car = conn.execute('SELECT * FROM cars WHERE id = ?', (car_id,)).fetchone()
-    if not car:
-        conn.close()
-        flash('Veículo não encontrado.', 'error')
-        return redirect(url_for('index'))
+
     if request.method == 'POST':
         data = request.form
-        conn.execute('''UPDATE cars SET brand=?, model=?, year=?, price=?, mileage=?, fuel=?, transmission=?, color=?, description=?, city=?, state=?, seller_name=?, seller_phone=?
+        
+        # --- LÓGICA DE NOVAS IMAGENS ---
+        files = request.files.getlist('images')
+        new_filenames = []
+        
+        for file in files[:6]:
+            if file and allowed_file(file.filename):
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                unique_name = f"{os.urandom(8).hex()}.{ext}"
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_name))
+                new_filenames.append(unique_name)
+        
+        # Se o usuário subiu novas fotos, usamos as novas. 
+        # Se não subiu nada, mantemos as fotos antigas que já estavam no banco.
+        if new_filenames:
+            images_to_save = ",".join(new_filenames)
+        else:
+            images_to_save = car['images']
+        # -------------------------------
+
+        conn.execute('''UPDATE cars SET 
+                        brand=?, model=?, year=?, price=?, mileage=?, fuel=?, 
+                        transmission=?, color=?, description=?, city=?, state=?, 
+                        seller_name=?, seller_phone=?, images=? 
                         WHERE id=?''',
                      (data['brand'], data['model'], int(data['year']), float(data['price']),
                       int(data['mileage']), data['fuel'], data['transmission'], data['color'],
-                      data['description'], data['city'], data['state'], data['seller_name'], data['seller_phone'], car_id))
+                      data['description'], data['city'], data['state'], data['seller_name'], 
+                      data['seller_phone'], images_to_save, car_id))
         conn.commit()
         conn.close()
-        flash('Veículo atualizado com sucesso!', 'success')
+        flash('Anúncio atualizado com sucesso!', 'success')
         return redirect(url_for('car_detail', car_id=car_id))
+    
     conn.close()
     return render_template('form.html', car=car, action='edit')
 

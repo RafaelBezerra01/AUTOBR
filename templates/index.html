@@ -139,10 +139,22 @@
         {% for car in cars %}
         {% set icons = {'Toyota':'','Honda':'','Volkswagen':'','Chevrolet':'','Jeep':'','Hyundai':'','Fiat':'','Renault':''} %}
         <a href="/car/{{ car.id }}" class="car-card">
-            <div class="car-img">
-                {{ icons.get(car.brand, '') }}
-                {% if car.year >= 2023 %}<span class="car-badge">Novo</span>{% endif %}
+            <div class="car-gallery">
+                {% if car.images %}
+                    {% set img_list = car.images.split(',') %}
+                    <div class="main-photo">
+                        <img src="{{ url_for('static', filename='uploads/' + img_list[0]) }}" id="currentImg" style="width:100%; border-radius:12px">
+                    </div>
+                    <div class="thumbnails" style="display:flex; gap:10px; margin-top:10px; overflow-x:auto">
+                        {% for img in img_list %}
+                            <img src="{{ url_for('static', filename='uploads/' + img) }}" 
+                                onclick="document.getElementById('currentImg').src=this.src"
+                                style="width:80px; height:60px; object-fit:cover; cursor:pointer; border-radius:4px; border:1px solid var(--border)">
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
+            
             <div class="car-info">
                 <div class="car-brand">{{ car.brand }}</div>
                 <div class="car-name">{{ car.model }} {{ car.year }}</div>

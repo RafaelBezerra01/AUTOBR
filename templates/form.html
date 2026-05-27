@@ -50,7 +50,23 @@ select option { background: var(--surface2); }
 </div>
 
 <div class="form-layout">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group full">
+            <label>Fotos (Máx 6 - JPG, PNG ou WebP)</label>
+            <input type="file" name="images" accept="image/*" multiple>
+            <small style="color: var(--muted)">Segure Ctrl para selecionar várias fotos.</small>
+        </div>
+    
+
+        <script>
+        // Pequeno script para garantir o limite de 6 arquivos no lado do cliente
+        function checkFiles(input) {
+            if (input.files.length > 6) {
+                alert("Você só pode selecionar no máximo 6 imagens.");
+                input.value = "";
+            }
+        }
+        </script>
         <div class="form-section">
             <div class="form-section-title"> Dados do veículo</div>
             <div class="form-grid">
