@@ -18,14 +18,13 @@
     <a href="/" class="logo">
         Auto<span>BR</span>
     </a>
-/* Adicionei a classe "nav-links" para estilizar os links de navegação */
     <div class="nav-links">
         <a href="/">Buscar</a>
         <a href="/car/new" class="btn-primary">+ Anunciar</a>
     </div>
 </nav>
 
-/* Estilos para a barra de navegação */
+
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
         <div class="flash {{ category }}">
@@ -34,7 +33,6 @@
     {% endfor %}
 {% endwith %}
 
-/* Estilos para mensagens flash */
 <div class="container">
     {% block content %}{% endblock %}
 </div>
