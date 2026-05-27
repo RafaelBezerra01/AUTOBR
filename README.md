@@ -27,6 +27,9 @@ http://localhost:5000
 webmotors/
 ├── app.py                 # Flask app + rotas + SQLite
 ├── requirements.txt
+├── static
+    ├──css
+        ├──styles.css
 └── templates/
     ├── base.html          # Layout base (nav, flash, footer)
     ├── index.html         # Listagem com busca e filtros
