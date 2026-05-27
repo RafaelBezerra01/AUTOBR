@@ -44,7 +44,7 @@ select option { background: var(--surface2); }
             <a href="/car/{{ car.id }}" style="color:var(--muted);text-decoration:none">{{ car.brand }} {{ car.model }}</a> › Editar
         </div>
         {% endif %}
-        <div class="form-title">{% if action == 'new' %}Anunciar veículo 🚗{% else %}Editar anúncio ✏️{% endif %}</div>
+        <div class="form-title">{% if action == 'new' %}Anunciar veículo {% else %}Editar anúncio {% endif %}</div>
         <div class="form-sub">Preencha os dados do veículo para {% if action == 'new' %}publicar seu anúncio{% else %}atualizar o anúncio{% endif %}</div>
     </div>
 </div>
@@ -52,7 +52,7 @@ select option { background: var(--surface2); }
 <div class="form-layout">
     <form method="POST">
         <div class="form-section">
-            <div class="form-section-title">📋 Dados do veículo</div>
+            <div class="form-section-title"> Dados do veículo</div>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Marca *</label>
@@ -74,7 +74,7 @@ select option { background: var(--surface2); }
         </div>
 
         <div class="form-section">
-            <div class="form-section-title">⚙️ Informações técnicas</div>
+            <div class="form-section-title">Informações técnicas</div>
             <div class="form-grid three">
                 <div class="form-group">
                     <label>Combustível *</label>
@@ -99,7 +99,7 @@ select option { background: var(--surface2); }
         </div>
 
         <div class="form-section">
-            <div class="form-section-title">💰 Valor e localização</div>
+            <div class="form-section-title">Valor e localização</div>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Preço (R$) *</label>
@@ -125,7 +125,7 @@ select option { background: var(--surface2); }
         </div>
 
         <div class="form-section">
-            <div class="form-section-title">👤 Dados do vendedor</div>
+            <div class="form-section-title"> Dados do vendedor</div>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nome *</label>
@@ -141,7 +141,7 @@ select option { background: var(--surface2); }
         <div class="form-actions">
             <a href="{{ '/car/' + car.id|string if car else '/' }}" class="btn-secondary">Cancelar</a>
             <button type="submit" class="btn-primary btn-submit">
-                {% if action == 'new' %}🚀 Publicar anúncio{% else %}💾 Salvar alterações{% endif %}
+                {% if action == 'new' %} Publicar anúncio{% else %} Salvar alterações{% endif %}
             </button>
         </div>
     </form>

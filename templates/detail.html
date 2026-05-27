@@ -60,7 +60,7 @@
             <div>
                 <div style="font-size:.78rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem">{{ car.brand }}</div>
                 <h1 style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-.04em;line-height:1.1">{{ car.model }} {{ car.year }}</h1>
-                <div style="color:var(--muted);margin-top:.4rem;font-size:.9rem">📍 {{ car.city }}, {{ car.state }}</div>
+                <div style="color:var(--muted);margin-top:.4rem;font-size:.9rem"> {{ car.city }}, {{ car.state }}</div>
             </div>
             <div style="text-align:right">
                 <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
@@ -71,8 +71,8 @@
 
 <div class="detail-layout">
     <div>
-        {% set icons = {'Toyota':'🚗','Honda':'🚙','Volkswagen':'🚘','Chevrolet':'🏎','Jeep':'🚙','Hyundai':'🚗','Fiat':'🚗','Renault':'🚗'} %}
-        <div class="car-photo">{{ icons.get(car.brand, '🚗') }}</div>
+        {% set icons = {'Toyota':'','Honda':'','Volkswagen':'','Chevrolet':'','Jeep':'','Hyundai':'','Fiat':'','Renault':''} %}
+        <div class="car-photo">{{ icons.get(car.brand, '') }}</div>
 
         <div class="detail-card" style="margin-top:1.5rem">
             <div class="section-title">Especificações</div>
@@ -94,7 +94,7 @@
         {% endif %}
 
         <div class="actions-row">
-            <a href="/car/{{ car.id }}/edit" class="btn-secondary">✏️ Editar anúncio</a>
+            <a href="/car/{{ car.id }}/edit" class="btn-secondary">Editar anúncio</a>
             <form method="POST" action="/car/{{ car.id }}/delete" onsubmit="return confirm('Tem certeza que deseja remover este veículo?')">
                 <button type="submit" class="btn-secondary btn-danger">🗑 Remover</button>
             </form>
@@ -105,12 +105,12 @@
         <div class="price-card">
             <div class="price-tag">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
             <div class="price-sub">{{ car.brand }} {{ car.model }} · {{ car.year }} · {{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</div>
-            <a href="tel:{{ car.seller_phone }}" class="btn-primary" style="display:block;text-align:center;padding:.75rem">📞 Ver telefone</a>
+            <a href="tel:{{ car.seller_phone }}" class="btn-primary" style="display:block;text-align:center;padding:.75rem">Ver telefone</a>
             <div class="seller-info">
                 <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">Vendedor</div>
                 <div class="seller-name">{{ car.seller_name }}</div>
                 <div class="seller-phone">{{ car.seller_phone }}</div>
-                <button class="btn-contact">💬 Enviar mensagem</button>
+                <button class="btn-contact"> Enviar mensagem</button>
             </div>
         </div>
     </div>

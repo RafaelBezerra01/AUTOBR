@@ -97,7 +97,7 @@
         <p>{{ cars|length }} veículos disponíveis agora mesmo</p>
         <form method="GET" action="/">
             <div class="search-bar">
-                <input class="search-input" name="search" placeholder="🔍  Marca, modelo ou cidade..." value="{{ search }}">
+                <input class="search-input" name="search" placeholder="  Marca, modelo ou cidade..." value="{{ search }}">
                 <select class="search-select" name="brand">
                     <option value="">Todas as marcas</option>
                     {% for b in brands %}
@@ -135,10 +135,10 @@
     {% if cars %}
     <div class="cars-grid">
         {% for car in cars %}
-        {% set icons = {'Toyota':'🚗','Honda':'🚙','Volkswagen':'🚘','Chevrolet':'🏎','Jeep':'🚙','Hyundai':'🚗','Fiat':'🚗','Renault':'🚗'} %}
+        {% set icons = {'Toyota':'','Honda':'','Volkswagen':'','Chevrolet':'','Jeep':'','Hyundai':'','Fiat':'','Renault':''} %}
         <a href="/car/{{ car.id }}" class="car-card">
             <div class="car-img">
-                {{ icons.get(car.brand, '🚗') }}
+                {{ icons.get(car.brand, '') }}
                 {% if car.year >= 2023 %}<span class="car-badge">Novo</span>{% endif %}
             </div>
             <div class="car-info">
@@ -151,14 +151,14 @@
                     <span class="tag">{{ car.color }}</span>
                 </div>
                 <div class="car-price">R$ {{ "{:,.0f}".format(car.price).replace(',','.') }}</div>
-                <div class="car-location">📍 {{ car.city }}, {{ car.state }}</div>
+                <div class="car-location"> {{ car.city }}, {{ car.state }}</div>
             </div>
         </a>
         {% endfor %}
     </div>
     {% else %}
     <div class="empty">
-        <div style="font-size:4rem;margin-bottom:1rem">🔍</div>
+        <div style="font-size:4rem;margin-bottom:1rem"></div>
         <h2>Nenhum veículo encontrado</h2>
         <p>Tente outros filtros ou <a href="/" style="color:var(--accent)">limpe a busca</a></p>
     </div>

@@ -4,13 +4,16 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'webmotors_secret'
-DB_PATH = 'cars.db'
+basedir = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(basedir, 'cars.db')
 
+# Função para obter conexão com o banco de dados
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+# Função para inicializar o banco de dados e criar a tabela de carros
 def init_db():
     conn = get_db()
     conn.execute('''
@@ -32,7 +35,8 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    # Seed data
+    
+    # Seed inicial de dados para testes
     count = conn.execute('SELECT COUNT(*) FROM cars').fetchone()[0]
     if count == 0:
         seeds = [
@@ -50,6 +54,7 @@ def init_db():
         conn.commit()
     conn.close()
 
+# Página inicial com busca e filtros
 @app.route('/')
 def index():
     conn = get_db()
@@ -89,6 +94,7 @@ def index():
                            search=search, brand=brand, min_price=min_price,
                            max_price=max_price, fuel=fuel, transmission=transmission)
 
+# Página de detalhes do veículo
 @app.route('/car/<int:car_id>')
 def car_detail(car_id):
     conn = get_db()
@@ -99,22 +105,37 @@ def car_detail(car_id):
         return redirect(url_for('index'))
     return render_template('detail.html', car=car)
 
+#criação de anúncios com validação de dados numéricos e mensagens de erro para o usuário
 @app.route('/car/new', methods=['GET', 'POST'])
 def car_new():
     if request.method == 'POST':
         data = request.form
+        
+        # Validação de dados numéricos
+        try:
+            year = int(data['year'])
+            price = float(data['price'])
+            mileage = int(data['mileage'])
+        except ValueError:
+            flash('Erro: Os campos Ano, Preço e Quilometragem devem conter apenas números.', 'error')
+            # Retorna o formulário com os dados preenchidos para o usuário corrigir
+            return render_template('form.html', car=data, action='new')
+
+        # Se passou na validação, insere no banco
         conn = get_db()
         conn.execute('''INSERT INTO cars (brand, model, year, price, mileage, fuel, transmission, color, description, city, state, seller_name, seller_phone)
                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-                     (data['brand'], data['model'], int(data['year']), float(data['price']),
-                      int(data['mileage']), data['fuel'], data['transmission'], data['color'],
+                     (data['brand'], data['model'], year, price,
+                      mileage, data['fuel'], data['transmission'], data['color'],
                       data['description'], data['city'], data['state'], data['seller_name'], data['seller_phone']))
         conn.commit()
         conn.close()
         flash('Veículo anunciado com sucesso!', 'success')
         return redirect(url_for('index'))
+        
     return render_template('form.html', car=None, action='new')
 
+# Edição de anúncios com validação de dados numéricos e mensagens de erro para o usuário
 @app.route('/car/<int:car_id>/edit', methods=['GET', 'POST'])
 def car_edit(car_id):
     conn = get_db()
@@ -137,6 +158,7 @@ def car_edit(car_id):
     conn.close()
     return render_template('form.html', car=car, action='edit')
 
+# Exclusão de anúncios
 @app.route('/car/<int:car_id>/delete', methods=['POST'])
 def car_delete(car_id):
     conn = get_db()
@@ -146,6 +168,7 @@ def car_delete(car_id):
     flash('Veículo removido com sucesso.', 'success')
     return redirect(url_for('index'))
 
+# Endpoint para estatísticas básicas da plataforma
 @app.route('/api/stats')
 def stats():
     conn = get_db()
