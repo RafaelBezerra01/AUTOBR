@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = 'webmotors_secret_2024'
+app.secret_key = 'webmotors_secret'
 DB_PATH = 'cars.db'
 
 def get_db():
