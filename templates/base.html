@@ -20,6 +20,15 @@
     </a>
     <div class="nav-links">
         <a href="/">Buscar</a>
+        {% if session.user_id %}
+            <span style="color: var(--muted); font-size: 0.8rem;">Olá, {{ session.username }}</span>
+            {% if session.role == 'admin' %}
+                <span class="badge">ADMIN</span>
+            {% endif %}
+            <a href="/logout">Sair</a>
+        {% else %}
+            <a href="/login">Entrar</a>
+        {% endif %}
         <a href="/car/new" class="btn-primary">+ Anunciar</a>
     </div>
 </nav>

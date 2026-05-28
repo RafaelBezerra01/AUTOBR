@@ -114,10 +114,14 @@
         {% endif %}
 
         <div class="actions-row">
-            <a href="/car/{{ car.id }}/edit" class="btn-secondary">Editar anúncio</a>
-            <form method="POST" action="/car/{{ car.id }}/delete" onsubmit="return confirm('Tem certeza que deseja remover este veículo?')">
-                <button type="submit" class="btn-secondary btn-danger">🗑 Remover</button>
-            </form>
+            {# Só mostra se for Admin OU se o ID do usuário logado for o dono do carro #}
+            {% if session.role == 'admin' or session.user_id == car.user_id %}
+                <a href="/car/{{ car.id }}/edit" class="btn-secondary">Editar anúncio</a>
+                
+                <form method="POST" action="{{ url_for('car_delete', car_id=car.id) }}">
+                    <button type="submit" class="btn-secondary btn-danger">Remover</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Login — AutoBR{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 4rem auto; padding: 2rem; background: var(--card); border-radius: 12px; border: 1px solid var(--border);">
+    <h2 style="font-family: 'Syne', sans-serif; margin-bottom: 1.5rem;">Entrar no AutoBR</h2>
+    <form method="POST">
+        <div style="margin-bottom: 1rem;">
+            <label>Usuário</label>
+            <input type="text" name="username" required style="width:100%; padding: 0.8rem; background: var(--surface2); border: 1px solid var(--border); color: white; border-radius: 8px;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label>Senha</label>
+            <input type="password" name="password" required style="width:100%; padding: 0.8rem; background: var(--surface2); border: 1px solid var(--border); color: white; border-radius: 8px;">
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
+    </form>
+    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--muted);">
+        Não tem conta? <a href="/register" style="color: var(--accent);">Cadastre-se</a>
+    </p>
+</div>
+{% endblock %}
