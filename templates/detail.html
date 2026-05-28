@@ -96,14 +96,14 @@
 
         <div class="detail-card" style="margin-top:1.5rem">
             <div class="section-title">Especificações</div>
-            <div class="specs-grid">
-                <div class="spec"><div class="spec-label">Ano</div><div class="spec-value">{{ car.year }}</div></div>
-                <div class="spec"><div class="spec-label">Quilometragem</div><div class="spec-value">{{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</div></div>
-                <div class="spec"><div class="spec-label">Combustível</div><div class="spec-value">{{ car.fuel }}</div></div>
-                <div class="spec"><div class="spec-label">Câmbio</div><div class="spec-value">{{ car.transmission }}</div></div>
-                <div class="spec"><div class="spec-label">Cor</div><div class="spec-value">{{ car.color }}</div></div>
-                <div class="spec"><div class="spec-label">Localização</div><div class="spec-value">{{ car.city }}/{{ car.state }}</div></div>
-            </div>
+                <div class="specs-grid">
+                    <div class="spec"><div class="spec-label">Ano</div><div class="spec-value">{{ car.year }}</div></div>
+                    <div class="spec"><div class="spec-label">Quilometragem</div><div class="spec-value">{{ "{:,.0f}".format(car.mileage).replace(',','.') }} km</div></div>
+                    <div class="spec"><div class="spec-label">Combustível</div><div class="spec-value">{{ car.fuel }}</div></div>
+                    <div class="spec"><div class="spec-label">Câmbio</div><div class="spec-value">{{ car.transmission }}</div></div>
+                    <div class="spec"><div class="spec-label">Cor</div><div class="spec-value">{{ car.color }}</div></div>
+                    <div class="spec"><div class="spec-label">Localização</div><div class="spec-value">{{ car.city }}/{{ car.state }}</div></div>
+                </div>
         </div>
 
         {% if car.description %}
