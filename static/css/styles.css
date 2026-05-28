@@ -19,7 +19,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'aptos', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -71,6 +71,12 @@
         }
 
         .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            width: auto;
+            white-space: nowrap;
             background: var(--accent);
             color: white;
             padding: 0.55rem 1.3rem;
@@ -81,7 +87,7 @@
             transition: 0.2s;
             border: none;
             cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'aptos', sans-serif;
         }
 
         .btn-primary:hover {
@@ -90,6 +96,12 @@
         }
 
         .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            width: auto;
+            white-space: nowrap;
             background: var(--surface2);
             color: var(--text);
             padding: 0.55rem 1.3rem;
@@ -100,7 +112,7 @@
             transition: 0.2s;
             border: 1px solid var(--border);
             cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'aptos', sans-serif;
         }
 
         .btn-secondary:hover {
