@@ -141,7 +141,7 @@
             border-color: #2ecc71;
             color: #2ecc71;
         }
-
+        
         .flash.error {
             background: #1f0d0d;
             border-color: var(--accent);
@@ -156,7 +156,7 @@
             padding: 2rem;
             flex: 1;
         }
-
+        
         footer {
             margin-top: auto;
             border-top: 1px solid var(--border);
@@ -165,3 +165,39 @@
             color: var(--muted);
             font-size: 0.85rem;
         }
+
+     
+/* O contêiner pai dos cartões */
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+    align-items: stretch;
+}
+
+/* O cartão do carro individual */
+.car-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+/* Efeito de hover para levantar o cartão */
+.car-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Ajuste para que as informações fiquem sempre no topo e o preço no rodapé, se desejar */
+.car-info {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+}
