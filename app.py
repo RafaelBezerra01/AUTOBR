@@ -4,6 +4,7 @@ from functools import wraps
 import sqlite3
 import os
 
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -234,7 +235,7 @@ def car_new():
             (user_id, data['brand'], data['model'], int(data['year']), float(data['price']),
              int(data['mileage']), data['fuel'], data['transmission'], data['color'],
              data['description'], data['city'], data['state'], data['seller_name'], 
-             data['seller_phone'], images_str)) # <-- Agora salvando a string das fotos
+             data['seller_phone'], images_str)) # Agora salvando a string das fotos
         
         conn.commit()
         conn.close()
